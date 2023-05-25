@@ -69,7 +69,7 @@ func handleCmd(text string) {
 	handleInvalidCmd(text)
 }
 
-// cleanInput preprocesses input to the db repl
+// cleanInput preprocesses input to the repl
 func cleanInput(text string) string {
 	output := strings.TrimSpace(text)
 	output = strings.ToLower(output)
@@ -83,15 +83,16 @@ func main() {
 	commandHelp()
 	printPrompt()
 	for reader.Scan() {
+			// sanitize the input
 			text := cleanInput(reader.Text())
 			if command, exists := commands[text]; exists {
-					// Call a hardcoded function
+					// Call commands callback function
 					command.callback()
-			} else if strings.EqualFold(".exit", text) {
+			} else if strings.EqualFold("exit", text) {
 					// Close the program on the exit command
 					return
 			} else {
-					// Pass the command to the parser
+					// Invalid command, pass the command to the parser
 					handleCmd(text)
 			}
 			printPrompt()
