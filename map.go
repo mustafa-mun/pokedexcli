@@ -10,18 +10,24 @@ import (
 
 
 type config struct {
-	offset int
+	prevOffset int
+	nextOffset int
 	next string
 	previous string
 }
 
+/*
+FIX THE MAPPING BUG
+*/
+
 func commandMap(cfg *config) {
 	// set current page to previous
+	cfg.prevOffset = cfg.nextOffset
 	cfg.previous = cfg.next
 	// Increment offset
-	cfg.offset += 20
+	cfg.nextOffset += 20
 	// set next page
-	cfg.next = fmt.Sprintf("https://pokeapi.co/api/v2/location-area/?limit=20&offset=%v", cfg.offset)
+	cfg.next = fmt.Sprintf("https://pokeapi.co/api/v2/location-area/?limit=20&offset=%v", cfg.nextOffset)
 
 	// get next page
 	res, err := http.Get(cfg.next)
@@ -57,7 +63,7 @@ func commandMap(cfg *config) {
 
 func commandMapb(cfg *config) {
 	// If user is not on the first page
-	if cfg.offset > 0 {
+	if cfg.prevOffset >= 0 {
 		res, err := http.Get(cfg.previous)
 		if err != nil {
 			log.Fatal(err)
@@ -74,10 +80,11 @@ func commandMapb(cfg *config) {
 		}
 
 		// decrease the page num
-		cfg.offset -= 20
-		cfg.offset -= 20
-
-		cfg.next = fmt.Sprintf("https://pokeapi.co/api/v2/location-area/?limit=20&offset=%v",cfg.offset)
+		cfg.nextOffset -= 20
+		cfg.prevOffset -= 20
+		// set prev and next to decreased offsets
+		cfg.previous = fmt.Sprintf("https://pokeapi.co/api/v2/location-area/?limit=20&offset=%v",cfg.prevOffset)
+		cfg.next = fmt.Sprintf("https://pokeapi.co/api/v2/location-area/?limit=20&offset=%v",cfg.nextOffset)
 
 
 		var result map[string]interface{}

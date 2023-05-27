@@ -72,7 +72,8 @@ func returnCommands(commandHelp, commandClear, commandMap, commandMapb func())(m
 func cliLoop() {
   offset := -20
 	cfg := config{
-		offset: offset,
+		prevOffset: offset,
+		nextOffset: offset,
 		next:     fmt.Sprintf("https://pokeapi.co/api/v2/location-area/?limit=20&offset=%v", offset),
 		previous: fmt.Sprintf("https://pokeapi.co/api/v2/location-area/?limit=20&offset=%v", offset),
 	}
