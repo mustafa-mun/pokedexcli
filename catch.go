@@ -5,19 +5,18 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
-	"time"
 )
 
 type Pokemon struct {
-	Name          string
-	BaseExperience float64
+	name            string
+	baseExperience  float64
+	abilities      []string
 }
 
-
-var catchedPokemons = make(map[string]Pokemon)
+var caughtPokemons = make(map[string]Pokemon)
 
 func catchCommand(pokemon string) {
-	_, ok := catchedPokemons[pokemon] 
+	_, ok := caughtPokemons[pokemon] 
 	// Check if pokemon is already catched
 	if ok {
 		fmt.Println("You already catched this pokemon !")
@@ -39,22 +38,29 @@ func catchCommand(pokemon string) {
 
 	difficulty := int(baseExp) // Convert to int
 
-	randomGenerator := rand.New(rand.NewSource(time.Now().UnixNano()))
-
 	// Generate a random number between 1 and difficulty
-	randomNumber := randomGenerator.Intn(difficulty) + 1
+	randomNumber := rand.Intn(difficulty) + 1
 	fmt.Println(randomNumber)
 
 	// Set the variable to true randomly with decreasing probability
-	isCatched := randomNumber < 30
+	isCaught := randomNumber < 30
+	if isCaught {
+		pokemonAbilities := result["abilities"].([]interface{})
+		abilities := make([]string, len(pokemonAbilities))
 
-	if isCatched {
-		catchedPokemons[pokemon] = Pokemon{
-			Name:          result["forms"].([]interface{})[0].(map[string]interface{})["name"].(string),
-			BaseExperience: result["base_experience"].(float64),
+		for i, ability := range pokemonAbilities {
+			abilities[i] = ability.(map[string]interface{})["ability"].(map[string]interface{})["name"].(string)
 		}
-		fmt.Println(catchedPokemons)
+
+		caughtPokemons[pokemon] = Pokemon{
+			name:           result["forms"].([]interface{})[0].(map[string]interface{})["name"].(string),
+			baseExperience: result["base_experience"].(float64),
+			abilities:      abilities,
+		}
+
+		fmt.Println(caughtPokemons)
+		fmt.Println(pokemon + " was caught!")
 	} else {
-		fmt.Println(pokemon + "escaped!")
+		fmt.Println(pokemon + " escaped!")
 	}
 }
