@@ -8,9 +8,26 @@ import (
 )
 
 type Pokemon struct {
-	name            string
-	baseExperience  float64
-	abilities      []string
+	Name   string            `json:"name"`
+	Height int               `json:"height"`
+	Weight int               `json:"weight"`
+	Stats  []StatInformation `json:"stats"`
+	Types []TypeInformation  `json:"types"`
+	BaseExperience int       `json:"base_experience"`
+}
+
+type TypeInformation struct {
+	Type StatData   `json:"type"`
+}
+ 
+
+type StatInformation struct {
+	Stat     StatData `json:"stat"`
+	BaseStat int      `json:"base_stat"`
+}
+
+type StatData struct {
+	Name string `json:"name"`
 }
 
 var caughtPokemons = make(map[string]Pokemon)
@@ -28,13 +45,13 @@ func catchCommand(pokemon string) {
 	url := fmt.Sprintf("https://pokeapi.co/api/v2/pokemon/%s/", pokemon)
 	body := fetchData(url)
 
-	var result map[string]interface{}
+	var result Pokemon
 	err := json.Unmarshal(body, &result)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	baseExp := result["base_experience"].(float64) // Convert to float64
+	baseExp := result.BaseExperience
 
 	difficulty := int(baseExp) // Convert to int
 
@@ -43,21 +60,9 @@ func catchCommand(pokemon string) {
 	fmt.Println(randomNumber)
 
 	// Set the variable to true randomly with decreasing probability
-	isCaught := randomNumber < 30
+	isCaught := randomNumber < 35
 	if isCaught {
-		pokemonAbilities := result["abilities"].([]interface{})
-		abilities := make([]string, len(pokemonAbilities))
-
-		for i, ability := range pokemonAbilities {
-			abilities[i] = ability.(map[string]interface{})["ability"].(map[string]interface{})["name"].(string)
-		}
-
-		caughtPokemons[pokemon] = Pokemon{
-			name:           result["forms"].([]interface{})[0].(map[string]interface{})["name"].(string),
-			baseExperience: result["base_experience"].(float64),
-			abilities:      abilities,
-		}
-
+		caughtPokemons[pokemon] = result
 		fmt.Println(caughtPokemons)
 		fmt.Println(pokemon + " was caught!")
 	} else {
