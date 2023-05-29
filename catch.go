@@ -46,7 +46,7 @@ func catchCommand(pokemon string) {
 	fmt.Println(randomNumber)
 
 	// Set the variable to true randomly with decreasing probability
-	isCatched := randomNumber > 30
+	isCatched := randomNumber < 30
 
 	if isCatched {
 		catchedPokemons[pokemon] = Pokemon{
