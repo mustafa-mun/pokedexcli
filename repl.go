@@ -101,6 +101,11 @@ func cliLoop() {
 				s := strings.Split(text, " ")
 				// take slices pokemon string to catch
 				catchCommand(s[1])
+			} else if strings.Contains(text, "inspect") {
+				// split string into slice
+				s := strings.Split(text, " ")
+				// take slices pokemon string to inspect
+				inspectCommand(s[1])
 			} else {
 					// Invalid command, pass the command to the parser
 					handleCmd(text)
