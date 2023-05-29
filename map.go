@@ -6,6 +6,9 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"time"
+
+	"github.com/mustafa-mun/pokedexcli/internal/pokecache"
 )
 
 type config struct {
@@ -15,36 +18,57 @@ type config struct {
 	previous string
 }
 
+var pokeCache = pokecache.NewCache(time.Minute * 5) 
+
 func getLocationAreas(url string) {
+	// Check if the data exists in the cache
+	if data, ok := pokeCache.Get(url); ok {
+		// Use the data from the cache
+		proccessData(data)
+		return
+	}
+
+	body := fetchData(url)
+	// Cache the fetched data
+	pokeCache.Add(url, body)
+	// Proccess the fetced data
+	proccessData(body)
+}
+
+func fetchData(url string) []byte {
 	res, err := http.Get(url)
 	if err != nil {
-		log.Fatal(err)
+		return nil
 	}
 	defer res.Body.Close()
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		log.Fatal(err)
+		return nil
 	}
 
 	if res.StatusCode > 299 {
 		log.Fatalf("Response failed with status code: %d and\nbody: %s\n", res.StatusCode, body)
 	}
 
-	// get result
+	return body
+}
+
+func proccessData(data []byte) {
 	var result map[string]interface{}
-	err = json.Unmarshal(body, &result)
+	err := json.Unmarshal(data, &result)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-  // get results array and print the location area
+	// Get results array and print the location area
 	results := result["results"].([]interface{})
 	for _, r := range results {
 		location := r.(map[string]interface{})
 		fmt.Println(location["name"])
 	}
 }
+
 
 func commandMap(cfg *config) {
 	// set current page to previous
