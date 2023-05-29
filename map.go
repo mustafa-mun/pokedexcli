@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"time"
-
 	"github.com/mustafa-mun/pokedexcli/internal/pokecache"
 )
 
@@ -24,7 +23,7 @@ func getLocationAreas(url string) {
 	// Check if the data exists in the cache
 	if data, ok := pokeCache.Get(url); ok {
 		// Use the data from the cache
-		proccessData(data)
+		proccessAreas(data)
 		return
 	}
 
@@ -32,7 +31,7 @@ func getLocationAreas(url string) {
 	// Cache the fetched data
 	pokeCache.Add(url, body)
 	// Proccess the fetced data
-	proccessData(body)
+	proccessAreas(body)
 }
 
 func fetchData(url string) []byte {
@@ -54,7 +53,7 @@ func fetchData(url string) []byte {
 	return body
 }
 
-func proccessData(data []byte) {
+func proccessAreas(data []byte) {
 	var result map[string]interface{}
 	err := json.Unmarshal(data, &result)
 	if err != nil {
