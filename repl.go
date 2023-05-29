@@ -96,6 +96,11 @@ func cliLoop() {
 				s := strings.Split(text, " ")
 				// take slices area string to explore
 				exploreCommand(s[1])
+			} else if strings.Contains(text, "catch") {
+				// split string into slice
+				s := strings.Split(text, " ")
+				// take slices pokemon string to catch
+				catchCommand(s[1])
 			} else {
 					// Invalid command, pass the command to the parser
 					handleCmd(text)

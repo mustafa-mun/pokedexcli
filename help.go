@@ -10,7 +10,8 @@ func commandHelp() {
 	fmt.Println("help    - Show available commands")
 	fmt.Println("map   - Show the names of 20 location areas")
 	fmt.Println("mapb		- Show previous names of 20 location areas")
-	fmt.Println("explore		-Explore an area")
+	fmt.Println("explore <area>		-Explore an area")
+	fmt.Println("catch <pokemon>		-Try to catch a pokemon")
 	fmt.Println("clear   - Clear the terminal screen")
 	fmt.Println("exit    - Closes your connection")
 }
