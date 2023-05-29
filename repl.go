@@ -91,6 +91,11 @@ func cliLoop() {
 			} else if strings.EqualFold("exit", text) {
 					// Close the program on the exit command
 					return
+			} else if strings.Contains(text, "explore") {
+				// split string into slice
+				s := strings.Split(text, " ")
+				// take slices area string to explore
+				exploreCommand(s[1])
 			} else {
 					// Invalid command, pass the command to the parser
 					handleCmd(text)
