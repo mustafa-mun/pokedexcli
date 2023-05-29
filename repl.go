@@ -43,7 +43,7 @@ func cleanInput(text string) string {
 	return output
 }
 
-func returnCommands(commandHelp, commandClear, commandMap, commandMapb func())(map[string]cliCommand) {
+func returnCommands(commandHelp, commandClear, commandMap, commandMapb, commandPokedex func())(map[string]cliCommand) {
 	return map[string]cliCommand{
     "help": {
         name:        "help",
@@ -60,11 +60,16 @@ func returnCommands(commandHelp, commandClear, commandMap, commandMapb func())(m
 			description: "Displays the previous names of 20 location areas in the Pokemon world",
 			callback:    commandMapb,
 	},
-		"clear" :{
-				name: "clear",
-				description: "Clears the terminal",
-				callback: commandClear,
-		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "Displays caught pokemons",
+			callback:   commandPokedex,
+	},
+	"clear" :{
+			name: "clear",
+			description: "Clears the terminal",
+			callback: commandClear,
+	},
 }
 }
 
@@ -77,7 +82,7 @@ func cliLoop() {
 		next:     fmt.Sprintf("https://pokeapi.co/api/v2/location-area/?limit=20&offset=%v", offset),
 		previous: fmt.Sprintf("https://pokeapi.co/api/v2/location-area/?limit=20&offset=%v", offset),
 	}
-	commands := returnCommands(commandHelp, commandClear, func(){commandMap(&cfg)}, func(){commandMapb(&cfg)})
+	commands := returnCommands(commandHelp, commandClear, func(){commandMap(&cfg)}, func(){commandMapb(&cfg)}, commandPokedex,)
 	// Begin the repl loop
 	reader := bufio.NewScanner(os.Stdin)
 	// commandHelp()
