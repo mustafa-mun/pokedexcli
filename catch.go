@@ -57,14 +57,13 @@ func catchCommand(pokemon string) {
 
 	// Generate a random number between 1 and difficulty
 	randomNumber := rand.Intn(difficulty) + 1
-	fmt.Println(randomNumber)
 
 	// Set the variable to true randomly with decreasing probability
 	isCaught := randomNumber < 35
 	if isCaught {
 		caughtPokemons[pokemon] = result
-		fmt.Println(caughtPokemons)
 		fmt.Println(pokemon + " was caught!")
+		fmt.Println("You may now inspect it with the inspect command.")
 	} else {
 		fmt.Println(pokemon + " escaped!")
 	}
